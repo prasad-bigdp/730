@@ -1,0 +1,8 @@
+JS Basics:
+  variables(var,let,const)
+  DataTypes(primitive(number,string,boolean,undefined,null),Non-Primitive(functions,arrays,objects))
+JS Projects
+Interview QA & LeetCode
+React Concepts
+React Projects
+Interview QA
