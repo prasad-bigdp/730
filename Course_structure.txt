@@ -6,3 +6,9 @@ Interview QA & LeetCode
 React Concepts
 React Projects
 Interview QA
+
+
+CSS -- pseudo elements/classes - scroll -conditional
+scss or sass
+bootstrap
+tailwind
