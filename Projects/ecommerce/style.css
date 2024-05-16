@@ -4,3 +4,32 @@
 img{
     height: 100px;
 }
+header{
+    background-color: black;
+    color: white;
+    position: fixed;
+    top: 0;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    padding: 20px 50px;
+}
+#products
+{
+    display: grid;
+    grid-template-columns: repeat(3,auto);
+}
+.product{
+    padding: 50px;
+    box-shadow: 5px 5px black;
+}
+.item
+{
+    display: flex;
+    justify-content: space-between;
+    margin: 20px;
+}
+#footer{
+    display: flex;
+    justify-content: space-between;
+}

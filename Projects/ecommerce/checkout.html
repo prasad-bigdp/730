@@ -4,8 +4,30 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    
+    <header>
+        <div class="logo">Some Mart</div>
+        <div class="details">
+            <div class="cart"><button id="checkout"><a href="./checkout.html" target="_blank">cart</a></button><span
+                    id="count">0</span></div>
+        </div>
+    </header>
+    <h1>checkout</h1>
+    <div id="checkout-details">
+
+    </div>
+    <div id="footer">
+        <div id="total"></div>
+        <div id="payment">
+            <button>continue for payment</button>
+            <form>
+                <script src="https://checkout.razorpay.com/v1/payment-button.js" data-payment_button_id="pl_Nil9fhzC9qgeXw"
+                    async> </script>
+            </form>
+        </div>
+    </div>
+    <script src="./checkout.js"></script>
 </body>
 </html>

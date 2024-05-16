@@ -47,8 +47,9 @@ export const cartUpdate = (p) =>
     count++;
     document.getElementById('count').textContent = count;
     cart.push(p);
-    alert("cart is "+count)
-    localStorage.setItem('cart', cart);
+    alert("cart is " + count)
+    console.log(cart)
+    localStorage.setItem('cart', JSON.stringify(cart));
     localStorage.setItem('count',count)
 }
 
