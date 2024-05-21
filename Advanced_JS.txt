@@ -1,0 +1,49 @@
+Design Principles:
+  i. DRY(Don't Repeat Yourself)
+  ii. Separation Of Concerns --> any part of your application should have dinctinct and non overlapping concern
+  iii. KISS(Keep it Simple,Stupid):always every module should be simple
+  iv: YAGNI( you aint gonna need it): if you don't need it, dont't add it.
+  SOLID Principles:
+  v. single responsibilty principle(SRP): a function should have only one reason to change. eg: classes
+  vi. open-closed principle: classes should be open for extension but closed for modification
+   for eg: you have a 
+   interface read{
+    read()
+   }
+   class admin implements read---> read(),write()... 
+   class student() implements read-->read() 
+   vi.Liskov substition Principle: subclasses can replace superclasses methods
+   vii.Interface Segregation Principle: No client should be forced to depend on methods it doesnot use, eg: interfaces, abstract classes
+   abstract class x{
+   fun(){}
+   }
+   class y extends x{
+
+   }
+   class Z extends x{
+
+   }
+   viii. Dependency Inversion Principle:higher order modules should not depend on low order modules , can use abstracts
+     
+   Design Patterns:
+     i. currying: instead of taking multip
+     ii. throttling: function executes atmost once in a specific time
+     iii.debouncing:function executes after certain time only once
+     iv.singleton
+     v. event delegation
+function add(a, b) {
+  return a + b;
+}
+
+const addCurry = a => b => a + b;
+function addCurry(a)
+{
+    return function(b)
+    {
+        return a+b
+    }
+}
+
+const addTwo = addCurry(2);
+
+console.log(addTwo(3));

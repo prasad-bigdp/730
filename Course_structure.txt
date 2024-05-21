@@ -3,6 +3,7 @@ JS Basics:
   DataTypes(primitive(number,string,boolean,undefined,null),Non-Primitive(functions,arrays,objects))
 JS Projects
 Interview QA & LeetCode
+Typescript
 React Concepts
 React Projects
 Interview QA

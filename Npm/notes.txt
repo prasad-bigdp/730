@@ -1,0 +1,5 @@
+Node package manager: To install/uninstall/manage the packages. Installed packages will be stored inside node modules.
+alternatives: yarn, pnpm.
+
+Typescript: Typescript will add data types to javascript
+
