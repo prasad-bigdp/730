@@ -1,0 +1,10 @@
+what is react? JS Library for UI interface by facebook , react 18
+what are react features? virtual DOM, component based, JSX, unidirectional data flow
+why react over others? Easy, multiple packages can be integrated,
+components: what is a component? template comprise of design,style,logic or reusauble logic of UI
+two types: 
+class components: stateful
+functional components:stateless -- even in function we can use hooks(useState)
+JSX: jsx returns only one element(react have a special element called fragment).
+JSX combines HTML with Js, js can be triggered by object braces
+

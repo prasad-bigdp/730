@@ -16,7 +16,7 @@ function App() {
     age:number
   }
   let obj: O = {
-    name: 25,
+    name: "25",
     age: 55
   }
   return (
