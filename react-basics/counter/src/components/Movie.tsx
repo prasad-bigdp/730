@@ -1,15 +1,23 @@
-interface MovieDetails{
-  title?: string,
-  im:string
+interface Product {
+	id: number
+	title: string
+	price: number
+	description: string
+	category: string
+	image: string
+	rating: {
+		rate: number
+		count: number
+	}
 }
-const Movie = ({ title, im }: MovieDetails) => {
+const Movie = ({ product}: Product ) => {
 	return (
 		<div>
 			<img
-				src={im}
+				src={ product.image }
 				alt='image'
 			/>
-			<h2>{title}</h2>
+			<h2>{product.title}</h2>
 		</div>
 	)
 }

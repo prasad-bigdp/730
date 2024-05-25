@@ -1,0 +1,719 @@
+React hooks allow you to use state and other React features without writing a class. Here is an explanation of each of the main React hooks with TypeScript examples.
+
+1. useState
+The useState hook is used to add state to a functional component.
+import React, { useState } from 'react';
+
+const Counter: React.FC = () => {
+  const [count, setCount] = useState<number>(0);
+
+  return (
+    <div>
+      <p>Count: {count}</p>
+      <button onClick={() => setCount(count + 1)}>Increment</button>
+    </div>
+  );
+};
+
+export default Counter;
+
+2. useEffect
+The useEffect hook lets you perform side effects in function components.
+
+import React, { useState, useEffect } from 'react';
+
+const Timer: React.FC = () => {
+  const [seconds, setSeconds] = useState<number>(0);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setSeconds(prevSeconds => prevSeconds + 1);
+    }, 1000);
+
+    return () => clearInterval(interval); // Cleanup
+  }, []);
+
+  return <div>Seconds: {seconds}</div>;
+};
+
+export default Timer;
+
+3. useContext
+The useContext hook lets you subscribe to React context without introducing nesting.
+
+import React, { createContext, useContext } from 'react';
+
+const ThemeContext = createContext<string>('light');
+
+const ThemedComponent: React.FC = () => {
+  const theme = useContext(ThemeContext);
+
+  return <div>Current theme: {theme}</div>;
+};
+
+const App: React.FC = () => {
+  return (
+    <ThemeContext.Provider value="dark">
+      <ThemedComponent />
+    </ThemeContext.Provider>
+  );
+};
+
+export default App;
+
+4. useReducer
+The useReducer hook is usually preferable to useState when you have complex state logic.
+
+import React, { useReducer } from 'react';
+
+type State = { count: number };
+type Action = { type: 'increment' | 'decrement' };
+
+const initialState: State = { count: 0 };
+
+function reducer(state: State, action: Action): State {
+  switch (action.type) {
+    case 'increment':
+      return { count: state.count + 1 };
+    case 'decrement':
+      return { count: state.count - 1 };
+    default:
+      throw new Error();
+  }
+}
+
+const Counter: React.FC = () => {
+  const [state, dispatch] = useReducer(reducer, initialState);
+
+  return (
+    <div>
+      <p>Count: {state.count}</p>
+      <button onClick={() => dispatch({ type: 'increment' })}>Increment</button>
+      <button onClick={() => dispatch({ type: 'decrement' })}>Decrement</button>
+    </div>
+  );
+};
+
+export default Counter;
+
+5. useRef
+The useRef hook is used to persist values across renders and to directly access DOM elements.
+
+import React, { useRef, useEffect } from 'react';
+
+const TextInput: React.FC = () => {
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    if (inputRef.current) {
+      inputRef.current.focus();
+      console.log(inputRef.current.value)
+    }
+  }, []);
+
+  return <Child ref={inputRef}/>
+};
+
+export default TextInput;
+
+const Child=React.ForwardRef((ref)=>{
+    return(
+        <>
+<input ref={ref} type="text" />;
+        
+        </>
+    )
+})
+
+
+6. useMemo
+The useMemo hook memoizes the result of a calculation between renders.
+The useCallback hook returns a memoized callback.
+
+import React, { useState, useMemo } from 'react';
+
+const Fibonacci: React.FC = () => {
+  const [num, setNum] = useState<number>(0);
+
+  const fibonacci = (n: number): number => {
+    if (n <= 1) return n;
+    return fibonacci(n - 1) + fibonacci(n - 2);
+  };
+
+  const fibValue = useMemo(() => fibonacci(num), [num]);
+
+  return (
+    <div>
+      <p>Fibonacci of {num} is {fibValue}</p>
+      <button onClick={() => setNum(num + 1)}>Next</button>
+    </div>
+  );
+};
+
+export default Fibonacci;
+
+7. useCallback
+The useCallback hook returns a memoized callback.
+
+import React, { useState, useCallback } from 'react';
+
+const Button: React.FC<{ onClick: () => void }> = React.memo(({ onClick }) => {
+  console.log('Button rendered');
+  return <button onClick={onClick}>Click me</button>;
+});
+
+const Parent: React.FC = () => {
+  const [count, setCount] = useState<number>(0);
+
+  const handleClick = useCallback(() => {
+    setCount(prevCount => prevCount + 1);
+  }, []);
+
+  return (
+    <div>
+      <p>Count: {count}</p>
+      <Button onClick={handleClick} />
+    </div>
+  );
+};
+
+export default Parent;
+
+8. useLayoutEffect
+The useLayoutEffect hook runs synchronously after all DOM mutations.
+
+import React, { useState, useLayoutEffect, useRef } from 'react';
+
+const LayoutEffectExample: React.FC = () => {
+  const [count, setCount] = useState<number>(0);
+  const divRef = useRef<HTMLDivElement>(null);
+
+  useLayoutEffect(() => {
+    if (divRef.current) {
+      divRef.current.style.color = count % 2 === 0 ? 'red' : 'blue';
+    }
+  }, [count]);
+
+  return (
+    <div ref={divRef}>
+      <p>Count: {count}</p>
+      <button onClick={() => setCount(count + 1)}>Increment</button>
+    </div>
+  );
+};
+
+export default LayoutEffectExample;
+
+9. useImperativeHandle
+The useImperativeHandle hook customizes the instance value that is exposed when using ref.
+
+import React, { useRef, useImperativeHandle, forwardRef } from 'react';
+
+type FancyInputProps = {
+  focus: () => void;
+};
+
+const FancyInput = forwardRef<FancyInputProps, {}>((props, ref) => {
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  useImperativeHandle(ref, () => ({
+    focus: () => {
+      if (inputRef.current) {
+        inputRef.current.focus();
+      }
+    },
+  }));
+
+  return <input ref={inputRef} type="text" />;
+});
+
+const Parent: React.FC = () => {
+  const fancyInputRef = useRef<FancyInputProps>(null);
+
+  return (
+    <div>
+      <FancyInput ref={fancyInputRef} />
+      <button onClick={() => fancyInputRef.current?.focus()}>Focus Input</button>
+    </div>
+  );
+};
+
+export default Parent;
+These examples cover the core React hooks with TypeScript. They illustrate how you can manage state, perform side effects, use context, handle complex state logic, reference DOM elements, memoize values and callbacks, and more.
+
+
+
+
+
+ advanced React topics using TypeScript, including custom hooks, higher-order components (HOCs), render props, context, error boundaries, and performance optimization.
+
+1. Custom Hooks
+Custom hooks allow you to reuse stateful logic across components.
+
+import React, { useState, useEffect } from 'react';
+
+// Custom Hook
+const useFetch = <T,>(url: string): { data: T | null, loading: boolean } => {
+  const [data, setData] = useState<T | null>(null);
+  const [loading, setLoading] = useState<boolean>(true);
+
+  useEffect(() => {
+    fetch(url)
+      .then(response => response.json())
+      .then(data => {
+        setData(data);
+        setLoading(false);
+      });
+  }, [url]);
+
+  return { data, loading };
+};
+
+// Component using the custom hook
+const DataComponent: React.FC = () => {
+  const { data, loading } = useFetch<{ name: string }[]>('https://api.example.com/items');
+
+  if (loading) return <div>Loading...</div>;
+
+  return (
+    <ul>
+      {data?.map(item => (
+        <li key={item.name}>{item.name}</li>
+      ))}
+    </ul>
+  );
+};
+
+export default DataComponent;
+
+2. Higher-Order Components (HOCs)
+HOCs are functions that take a component and return a new component.
+
+import React from 'react';
+
+type WithLoadingProps = {
+  loading: boolean;
+};
+
+const withLoading = <P extends object>(Component: React.ComponentType<P>) => {
+  return (props: P & WithLoadingProps) => {
+    const { loading, ...rest } = props;
+    if (loading) return <div>Loading...</div>;
+    return <Component {...(rest as P)} />;
+  };
+};
+
+type DataProps = {
+  data: string[];
+};
+
+const DataComponent: React.FC<DataProps> = ({ data }) => (
+  <ul>
+    {data.map(item => (
+      <li key={item}>{item}</li>
+    ))}
+  </ul>
+);
+
+const DataComponentWithLoading = withLoading(DataComponent);
+
+const App: React.FC = () => {
+  const loading = true; // Simulate loading state
+  const data = ['Item 1', 'Item 2'];
+
+  return <DataComponentWithLoading loading={loading} data={data} />;
+};
+
+export default App;
+
+3. Render Props
+Render props is a technique for sharing code between components using a prop whose value is a function.
+
+import React, { useState, ReactNode } from 'react';
+
+type RenderPropsComponentProps = {
+  children: (count: number, increment: () => void) => ReactNode;
+};
+
+const RenderPropsComponent: React.FC<RenderPropsComponentProps> = ({ children }) => {
+  const [count, setCount] = useState(0);
+
+  const increment = () => setCount(count + 1);
+
+  return <>{children(count, increment)}</>;
+};
+
+const App: React.FC = () => (
+  <RenderPropsComponent>
+    {(count, increment) => (
+      <div>
+        <p>Count: {count}</p>
+        <button onClick={increment}>Increment</button>
+      </div>
+    )}
+  </RenderPropsComponent>
+);
+
+export default App;
+
+4. Context API
+The Context API provides a way to pass data through the component tree without having to pass props down manually at every level.
+
+import React, { createContext, useContext, useState } from 'react';
+
+type Theme = 'light' | 'dark';
+
+const ThemeContext = createContext<{ theme: Theme, toggleTheme: () => void } | undefined>(undefined);
+
+const ThemeProvider: React.FC = ({ children }) => {
+  const [theme, setTheme] = useState<Theme>('light');
+
+  const toggleTheme = () => setTheme(theme === 'light' ? 'dark' : 'light');
+
+  return (
+    <ThemeContext.Provider value={{ theme, toggleTheme }}>
+      {children}
+    </ThemeContext.Provider>
+  );
+};
+
+const ThemedComponent: React.FC = () => {
+  const themeContext = useContext(ThemeContext);
+
+  if (!themeContext) throw new Error('ThemeContext must be used within a ThemeProvider');
+
+  return (
+    <div style={{ background: themeContext.theme === 'light' ? '#fff' : '#333', color: themeContext.theme === 'light' ? '#000' : '#fff' }}>
+      <p>Current theme: {themeContext.theme}</p>
+      <button onClick={themeContext.toggleTheme}>Toggle Theme</button>
+    </div>
+  );
+};
+
+const App: React.FC = () => (
+  <ThemeProvider>
+    <ThemedComponent />
+  </ThemeProvider>
+);
+
+export default App;
+5. Error Boundaries
+Error boundaries catch JavaScript errors anywhere in their child component tree, log those errors, and display a fallback UI.
+
+
+import React, { Component, ErrorInfo, ReactNode } from 'react';
+
+type ErrorBoundaryProps = {
+  children: ReactNode;
+};
+
+type ErrorBoundaryState = {
+  hasError: boolean;
+};
+
+class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
+  constructor(props: ErrorBoundaryProps) {
+    super(props);
+    this.state = { hasError: false };
+  }
+
+  static getDerivedStateFromError(_: Error): ErrorBoundaryState {
+    return { hasError: true };
+  }
+
+  componentDidCatch(error: Error, errorInfo: ErrorInfo) {
+    console.error("Uncaught error:", error, errorInfo);
+  }
+
+  render() {
+    if (this.state.hasError) {
+      return <h1>Something went wrong.</h1>;
+    }
+
+    return this.props.children;
+  }
+}
+
+const BuggyComponent: React.FC = () => {
+  throw new Error('I crashed!');
+  return <div>Buggy Component</div>;
+};
+
+const App: React.FC = () => (
+  <ErrorBoundary>
+    <BuggyComponent />
+  </ErrorBoundary>
+);
+
+export default App;
+
+6. Performance Optimization
+React provides several tools to optimize performance, such as React.memo and useMemo.
+
+import React, { useState, useMemo } from 'react';
+
+const ExpensiveComponent: React.FC<{ num: number }> = ({ num }) => {
+  const computeFactorial = (n: number): number => {
+    console.log('Computing factorial...');
+    return n <= 1 ? 1 : n * computeFactorial(n - 1);
+  };
+
+  const factorial = useMemo(() => computeFactorial(num), [num]);
+
+  return <div>Factorial of {num} is {factorial}</div>;
+};
+
+const App: React.FC = () => {
+  const [num, setNum] = useState<number>(1);
+  const [show, setShow] = useState<boolean>(true);
+
+  return (
+    <div>
+      <button onClick={() => setNum(num + 1)}>Increment Number</button>
+      <button onClick={() => setShow(!show)}>Toggle Expensive Component</button>
+      {show && <ExpensiveComponent num={num} />}
+    </div>
+  );
+};
+
+export default App;
+These examples cover some of the advanced React topics using TypeScript, showcasing techniques for creating reusable logic, enhancing component performance, and handling errors.
+
+
+Here are more advanced React topics with TypeScript examples, including portals, code splitting, suspense, lazy loading, and using refs for imperative API access.
+
+7. Portals
+Portals provide a way to render children into a DOM node that exists outside the DOM hierarchy of the parent component.
+
+import React from 'react';
+import ReactDOM from 'react-dom';
+
+const Modal: React.FC<{ onClose: () => void }> = ({ onClose, children }) => {
+  const modalRoot = document.getElementById('modal-root');
+
+  if (!modalRoot) return null;
+
+  return ReactDOM.createPortal(
+    <div className="modal">
+      <div className="modal-content">
+        <button onClick={onClose}>Close</button>
+        {children}
+      </div>
+    </div>,
+    modalRoot
+  );
+};
+
+const App: React.FC = () => {
+  const [isOpen, setIsOpen] = React.useState(false);
+
+  return (
+    <div>
+      <button onClick={() => setIsOpen(true)}>Open Modal</button>
+      {isOpen && <Modal onClose={() => setIsOpen(false)}>Hello, I'm a portal modal!</Modal>}
+    </div>
+  );
+};
+
+export default App;
+
+8. Code Splitting
+Code splitting is a feature that allows you to split your code into various bundles which can then be loaded on demand.
+
+import React, { Suspense, lazy } from 'react';
+
+const LazyComponent = lazy(() => import('./LazyComponent'));
+
+const App: React.FC = () => (
+  <div>
+    <Suspense fallback={<div>Loading...</div>}>
+      <LazyComponent />
+    </Suspense>
+  </div>
+);
+
+export default App;
+
+9. Suspense
+Suspense is a component that lets you “wait” for some code to load and declaratively specify a loading state.
+
+import React, { Suspense, useState, useEffect } from 'react';
+
+const DataFetchingComponent = React.lazy(() => import('./DataFetchingComponent'));
+
+const App: React.FC = () => {
+  const [data, setData] = useState<string | null>(null);
+
+  useEffect(() => {
+    setTimeout(() => {
+      setData('Data fetched');
+    }, 2000);
+  }, []);
+
+  return (
+    <div>
+      <Suspense fallback={<div>Loading...</div>}>
+        {data ? <DataFetchingComponent data={data} /> : <div>No data yet</div>}
+      </Suspense>
+    </div>
+  );
+};
+
+export default App;
+
+10. Lazy Loading
+Lazy loading is the technique of loading components only when they are needed.
+
+import React, { Suspense, lazy } from 'react';
+
+const LazyLoadedComponent = lazy(() => import('./LazyLoadedComponent'));
+
+const App: React.FC = () => (
+  <div>
+    <h1>My App</h1>
+    <Suspense fallback={<div>Loading...</div>}>
+      <LazyLoadedComponent />
+    </Suspense>
+  </div>
+);
+
+export default App;
+
+11. Refs for Imperative API Access
+Refs provide a way to access DOM nodes or React elements created in the render method.
+
+import React, { useRef } from 'react';
+
+const ImperativeComponent: React.FC = () => {
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  const focusInput = () => {
+    if (inputRef.current) {
+      inputRef.current.focus();
+    }
+  };
+
+  return (
+    <div>
+      <input ref={inputRef} type="text" />
+      <button onClick={focusInput}>Focus Input</button>
+    </div>
+  );
+};
+
+export default ImperativeComponent;
+
+12. Fragments
+Fragments let you group a list of children without adding extra nodes to the DOM.
+
+import React from 'react';
+
+const FragmentComponent: React.FC = () => (
+  <React.Fragment>
+    <p>Paragraph 1</p>
+    <p>Paragraph 2</p>
+  </React.Fragment>
+);
+
+export default FragmentComponent;
+
+13. Context with TypeScript
+Using context with TypeScript can provide strong type safety for your global state.
+
+import React, { createContext, useContext, useState } from 'react';
+
+type User = {
+  name: string;
+  age: number;
+};
+
+const UserContext = createContext<User | undefined>(undefined);
+
+const UserProvider: React.FC = ({ children }) => {
+  const [user, setUser] = useState<User>({ name: 'John Doe', age: 30 });
+
+  return <UserContext.Provider value={user}>{children}</UserContext.Provider>;
+};
+
+const UserProfile: React.FC = () => {
+  const user = useContext(UserContext);
+
+  if (!user) {
+    return <div>No user data</div>;
+  }
+
+  return (
+    <div>
+      <p>Name: {user.name}</p>
+      <p>Age: {user.age}</p>
+    </div>
+  );
+};
+
+const App: React.FC = () => (
+  <UserProvider>
+    <UserProfile />
+  </UserProvider>
+);
+
+export default App;
+
+14. Forwarding Refs
+Forwarding refs is a technique for automatically passing a ref through a component to one of its children.
+
+
+import React, { forwardRef, useRef } from 'react';
+
+type InputProps = React.HTMLProps<HTMLInputElement>;
+
+const CustomInput = forwardRef<HTMLInputElement, InputProps>((props, ref) => (
+  <input ref={ref} {...props} />
+));
+
+const App: React.FC = () => {
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  const focusInput = () => {
+    if (inputRef.current) {
+      inputRef.current.focus();
+    }
+  };
+
+  return (
+    <div>
+      <CustomInput ref={inputRef} type="text" />
+      <button onClick={focusInput}>Focus Input</button>
+    </div>
+  );
+};
+
+export default App;
+
+15. React.memo for Performance Optimization
+React.memo is a higher-order component that memoizes a component to avoid unnecessary re-renders.
+
+
+import React, { useState } from 'react';
+
+type ExpensiveComponentProps = {
+  count: number;
+};
+
+const ExpensiveComponent: React.FC<ExpensiveComponentProps> = React.memo(({ count }) => {
+  console.log('Expensive component rendered');
+  return <div>Count: {count}</div>;
+});
+
+const App: React.FC = () => {
+  const [count, setCount] = useState(0);
+
+  return (
+    <div>
+      <button onClick={() => setCount(count + 1)}>Increment</button>
+      <ExpensiveComponent count={count} />
+    </div>
+  );
+};
+
+export default App;
+These additional examples demonstrate how to handle advanced React concepts with TypeScript, such as portals, code splitting, suspense, lazy loading, imperative API access, and performance optimization techniques.

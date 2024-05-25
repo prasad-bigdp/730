@@ -1,0 +1,21 @@
+components- class, functional,pure,impure,
+nested components- component inside a component
+props - static props,dynamic props, function as a prop, prop drilling(context API), prop types(if you use js) else define interface in ts
+state: classes have default state, functions have useState hook
+const [vale,fn]=useState(initial)
+useEffect: used for side effects
+useEffect(()=>{
+    fn logic;
+    cleanup logic;
+},[dependencies])
+-->hooks
+-->forms
+-->advanced
+-->routing
+
+
+
+
+
+
+
