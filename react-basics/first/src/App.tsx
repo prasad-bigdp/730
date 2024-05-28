@@ -1,31 +1,16 @@
+import React, { Suspense, lazy } from "react"
 
-import './App.css'
+const LazyComponent = lazy(() => import("./LazyComponent"))
+import LoadingComponent from "./LoadingComponent"
+import BasicForm from "./ControlledForm"
 
-function App() {
-  let x:number | string = 25;
-  x = "raj";
-  let y: string = "vbc";
-  let z: boolean = true;
-  let p: undefined = undefined;
-  let q: null = null;
-  let num: (number | string)[] = [ 2, 5, "t" ];
-  let num1: [ number, string, number ] = [ 2, "j", 88 ]
-  let num3: any = 2;
-  interface O{
-    name: string,
-    age:number
-  }
-  let obj: O = {
-    name: "25",
-    age: 55
-  }
-  return (
-    <>
-      { console.log(typeof (x), x) }
-      { console.log(typeof(num1))}
-     
-    </>
-  )
-}
+const App: React.FC = () => (
+	<div>
+		<Suspense fallback={<LoadingComponent/>}>
+      <LazyComponent />
+      <BasicForm/>
+		</Suspense>
+	</div>
+)
 
 export default App
