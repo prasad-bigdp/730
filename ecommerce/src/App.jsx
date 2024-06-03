@@ -8,9 +8,9 @@ import Product from './pages/Product'
 import Layout from './Layout'
 function App() {
 
-  return (
-		<Layout>
-			<Router>
+	return (
+		<Router>
+			<Layout>
 				<Routes>
 					<Route
 						path='/'
@@ -25,8 +25,8 @@ function App() {
 						path='/Cart'
 						Component={Cart}></Route>
 				</Routes>
-			</Router>
-		</Layout>
+			</Layout>
+		</Router>
 	)
 }
 
